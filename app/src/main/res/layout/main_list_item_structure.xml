@@ -1,0 +1,110 @@
+<?xml version="1.0" encoding="utf-8"?>
+<layout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools">
+
+    <data>
+
+        <variable
+            name="deviceModel"
+            type="com.adityabugalia.playingwithlights.models.DeviceModel" />
+
+        <variable
+            name="viewModel"
+            type="com.adityabugalia.playingwithlights.viewmodels.MainActivityViewModel" />
+
+    </data>
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="vertical"
+        android:padding="@dimen/padding_3"
+        app:setBackgroundColorLL="@{deviceModel.deviceColor}">
+
+        <LinearLayout
+            android:id="@+id/itemMainListCL"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+
+            android:background="@android:color/white"
+            android:orientation="vertical">
+
+            <LinearLayout
+
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:background="@android:color/white"
+                android:padding="@dimen/padding_3"
+                android:orientation="horizontal">
+
+                <View
+                    android:id="@+id/deviceColorView"
+                    setBackgroundColorView="@{deviceModel.deviceColor}"
+                    android:layout_width="40dp"
+                    android:layout_height="40dp"
+                    app:layout_constraintStart_toStartOf="parent"
+                    app:layout_constraintTop_toTopOf="parent">
+
+                </View>
+
+                <LinearLayout
+
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:background="@android:color/white"
+                    android:orientation="vertical">
+
+                    <TextView
+                        android:id="@+id/deviceNameTV"
+                        style="@style/heading_text_style"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:clickable="false"
+                        android:ellipsize="end"
+                        android:text="@string/app_name"
+                        app:setTextViewText="@{deviceModel.deviceName}" />
+
+                    <TextView
+                        android:id="@+id/deviceIdTV"
+                        style="@style/subheading_text_style"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:clickable="false"
+                        android:text="@string/app_name"
+                        app:setTextViewText="@{deviceModel.deviceId}" />
+
+                </LinearLayout>
+            </LinearLayout>
+
+            <LinearLayout
+
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:background="@android:color/white"
+                android:padding="@dimen/padding_3"
+                android:orientation="horizontal">
+
+                <Switch
+                    android:id="@+id/deviceOnOffButton"
+                    android:layout_width="30dp"
+                    android:layout_height="20dp"
+                    android:tag="@{deviceModel.deviceId}"
+                    android:onCheckedChanged="@{(switch, checked) -> viewModel.onDeviceSwitchToggled(deviceModel.deviceId, checked)}"
+
+                    app:layout_constraintTop_toBottomOf="@+id/deviceColorView" />
+
+                <SeekBar
+                    android:id="@+id/brightnessBarSB"
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent"
+                    android:max="100"
+                    android:onProgressChanged ="@{(sb, value, fromUser) -> viewModel.onDeviceBrightnessToggled(deviceModel.deviceId, value)}"
+                    android:progress="@{deviceModel.deviceBrightnessLevel}"
+                    android:tag="@{deviceModel.deviceId}">
+
+                </SeekBar>
+            </LinearLayout>
+        </LinearLayout>
+    </LinearLayout>
+</layout>

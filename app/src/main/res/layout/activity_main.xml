@@ -1,0 +1,67 @@
+<?xml version="1.0" encoding="utf-8"?>
+<layout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools">
+
+    <data>
+
+        <variable
+            name="viewModel"
+            type="com.adityabugalia.playingwithlights.viewmodels.MainActivityViewModel" />
+
+    </data>
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:orientation="vertical"
+        tools:context=".ui.MainActivity">
+
+        <TextView
+            style="@style/heading_text_style"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="@dimen/margin_32"
+            android:gravity="center"
+            android:text="@string/mydevices">
+
+        </TextView>
+
+        <LinearLayout
+
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="@dimen/margin_8"
+            android:background="@android:color/white"
+            android:orientation="horizontal"
+            android:padding="@dimen/margin_16">
+
+            <Switch
+                android:id="@+id/deviceOnOffButton"
+                android:layout_width="30dp"
+                android:layout_height="20dp"
+                android:checked="true"
+                android:onCheckedChanged="@{(switch, checked) -> viewModel.onMainSwitchToggled(checked)}"
+
+                app:layout_constraintTop_toBottomOf="@+id/deviceColorView" />
+
+            <SeekBar
+                android:id="@+id/brightnessBarSB"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:max="100">
+
+
+            </SeekBar>
+        </LinearLayout>
+
+        <androidx.recyclerview.widget.RecyclerView
+            android:id="@+id/mainDisplayRV"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:layout_marginTop="@dimen/margin_16">
+
+        </androidx.recyclerview.widget.RecyclerView>
+
+    </LinearLayout>
+</layout>

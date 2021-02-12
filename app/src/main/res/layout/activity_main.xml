@@ -49,6 +49,7 @@
                 android:id="@+id/brightnessBarSB"
                 android:layout_width="match_parent"
                 android:layout_height="match_parent"
+                android:onProgressChanged ="@{(sb, value, fromUser) -> viewModel.onMainBrightnessToggled(value)}"
                 android:max="100">
 
 

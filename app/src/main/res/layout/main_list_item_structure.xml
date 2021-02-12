@@ -35,8 +35,8 @@
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:background="@android:color/white"
-                android:padding="@dimen/padding_3"
-                android:orientation="horizontal">
+                android:orientation="horizontal"
+                android:padding="@dimen/padding_3">
 
                 <View
                     android:id="@+id/deviceColorView"
@@ -82,16 +82,16 @@
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:background="@android:color/white"
-                android:padding="@dimen/padding_3"
-                android:orientation="horizontal">
+                android:orientation="horizontal"
+                android:padding="@dimen/padding_3">
 
                 <Switch
                     android:id="@+id/deviceOnOffButton"
                     android:layout_width="30dp"
                     android:layout_height="20dp"
-                    android:tag="@{deviceModel.deviceId}"
+                    android:checked="@{deviceModel.deviceStatus}"
                     android:onCheckedChanged="@{(switch, checked) -> viewModel.onDeviceSwitchToggled(deviceModel.deviceId, checked)}"
-
+                    android:tag="@{deviceModel.deviceId}"
                     app:layout_constraintTop_toBottomOf="@+id/deviceColorView" />
 
                 <SeekBar
@@ -99,7 +99,7 @@
                     android:layout_width="match_parent"
                     android:layout_height="match_parent"
                     android:max="100"
-                    android:onProgressChanged ="@{(sb, value, fromUser) -> viewModel.onDeviceBrightnessToggled(deviceModel.deviceId, value)}"
+                    android:onProgressChanged="@{(sb, value, fromUser) -> viewModel.onDeviceBrightnessToggled(deviceModel.deviceId, value)}"
                     android:progress="@{deviceModel.deviceBrightnessLevel}"
                     android:tag="@{deviceModel.deviceId}">
 

@@ -33,13 +33,13 @@ class MainActivityViewModel : ViewModel() {
     private var totalBrightness = 0
     private var totalDevices = 0
     private var isAllDevicesOff = true
+    private var isFirstTime = true
     val Boolean.int
         get() = if (this) 1 else 0
 
+
     fun onViewReady() {
         generateData()
-
-
     }
 
     private fun generateData() {
@@ -66,7 +66,11 @@ class MainActivityViewModel : ViewModel() {
                     totalDevices++
                     updateTotalBrightness(deviceBrightness, true)
                     var deviceModel =
-                        DeviceModel(deviceId, deviceStatus, deviceBrightness, "#000000", "")
+                        DeviceModel(
+                            deviceId,
+                            if (deviceStatus == 0) false else true, deviceBrightness, "#000000", ""
+                        )
+                    "?:>m,n"
 
                     deviceList.add(deviceModel)
                     updateAllDeviceStatus(deviceStatus)
@@ -121,30 +125,47 @@ class MainActivityViewModel : ViewModel() {
     fun onMainSwitchToggled(checked: Boolean) {
         Log.d("", "")
         TransmitDataToDevice.transmitDataForAllDevice(checked)
+        updateDeviceList(checked)
+    }
 
+    fun onMainBrightnessToggled(brightnessValue: Int) {
+        Log.d("Brightness", " Value: " + brightnessValue)
+        if (!isFirstTime)
+            updateDeviceList(brightnessValue)
+        else
+            isFirstTime = false
     }
 
     fun onDeviceSwitchToggled(deviceId: Int, switchedOn: Boolean) {
         Log.d("", "")
-        TransmitDataToDevice.transmitDataForDevice(deviceId,switchedOn)
+        TransmitDataToDevice.transmitDataForDevice(deviceId, switchedOn)
     }
 
     fun onDeviceBrightnessToggled(deviceId: Int, brightnessValue: Int) {
         Log.d("Brightness", "DeviceId:" + deviceId + " Value: " + brightnessValue)
-        updateDeviceList(deviceId,brightnessValue)
+        updateDeviceList(deviceId, brightnessValue)
     }
 
     fun updateDeviceList(deviceId: Int, brightnessValue: Int) {
 
         deviceList.forEach {
             if (it.deviceId == deviceId) {
-                    it.deviceBrightnessLevel = brightnessValue
+                it.deviceBrightnessLevel = brightnessValue
             }
             totalBrightness = 0
-            updateTotalBrightness(it.deviceBrightnessLevel,true)
+            updateTotalBrightness(it.deviceBrightnessLevel, true)
         }
         onDeviceSatusUpdate.postValue(true)
         onMainBrightnessChange.postValue(totalBrightness)
+    }
+
+    fun updateDeviceList(brightnessValue: Int) {
+
+        deviceList.forEach {
+            it.deviceBrightnessLevel = brightnessValue
+            totalBrightness = brightnessValue
+        }
+        onDeviceSatusUpdate.postValue(true)
     }
 
     fun updateDeviceList(deviceId: Int, switchedOn: Boolean) {
@@ -152,7 +173,7 @@ class MainActivityViewModel : ViewModel() {
         deviceList.forEach {
             if (it.deviceId == deviceId) {
 
-                it.deviceStatus = switchedOn.int
+                it.deviceStatus = switchedOn
             }
         }
         onDeviceSatusUpdate.postValue(true)
@@ -160,7 +181,7 @@ class MainActivityViewModel : ViewModel() {
 
     fun updateDeviceList(switchedOn: Boolean) {
         deviceList.forEach {
-            it.deviceStatus = switchedOn.int
+            it.deviceStatus = switchedOn
 
         }
         onDeviceSatusUpdate.postValue(true)

@@ -1,7 +1,6 @@
 package com.adityabugalia.playingwithlights.ui
 
 import android.os.Bundle
-import android.view.inputmethod.InputMethodManager
 import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
 import androidx.databinding.DataBindingUtil
@@ -25,8 +24,6 @@ class MainActivity : AppCompatActivity() {
         super.onCreate(savedInstanceState)
         //setContentView(R.layout.activity_main)
         binding = DataBindingUtil.setContentView(this, R.layout.activity_main)
-
-
     }
 
 
@@ -56,9 +53,9 @@ class MainActivity : AppCompatActivity() {
             this,
             Observer { result ->
                 adapter.reloadData()
-
             }
         )
+
         viewModel.onViewReadyLiveData.observe(
             this,
             Observer { result ->
@@ -72,6 +69,13 @@ class MainActivity : AppCompatActivity() {
             this,
             Observer { result ->
                 binding.brightnessBarSB.progress = result
+
+            }
+        )
+        viewModel.onMainDeviceTurnOff.observe(
+            this,
+            Observer { result ->
+                showToast(if(result==true) "All Devices Turn On" else "All devices Turned off")
 
             }
         )

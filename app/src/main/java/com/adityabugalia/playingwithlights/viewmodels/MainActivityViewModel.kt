@@ -7,6 +7,7 @@ import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import com.adityabugalia.playingwithlights.devicecommunication.TransmitDataToDevice
 import com.adityabugalia.playingwithlights.models.DeviceModel
+import com.adityabugalia.playingwithlights.utils.DeviceCalibrations
 import retrofit2.Call
 import retrofit2.Callback
 import retrofit2.Response
@@ -34,6 +35,7 @@ class MainActivityViewModel : ViewModel() {
     private var totalDevices = 0
     private var isAllDevicesOff = true
     private var isFirstTime = true
+    var isCallFromChild = false
     val Boolean.int
         get() = if (this) 1 else 0
 
@@ -64,7 +66,7 @@ class MainActivityViewModel : ViewModel() {
                 2 -> {
                     deviceBrightness = it.toInt()
                     totalDevices++
-                    updateTotalBrightness(deviceBrightness, true)
+                    increaseTotalBrightness(deviceBrightness)
                     var deviceModel =
                         DeviceModel(
                             deviceId,
@@ -114,78 +116,50 @@ class MainActivityViewModel : ViewModel() {
     }
 
 
-    private fun updateTotalBrightness(newValue: Int, isAddition: Boolean) {
-        if (isAddition)
-            totalBrightness = totalBrightness + newValue
-        else
-            totalBrightness = totalBrightness - newValue
+    fun increaseTotalBrightness(newValue: Int) {
+        totalBrightness = totalBrightness + newValue
+    }
+
+    fun decreaseTotalBrightness(newValue: Int) {
+        totalBrightness = totalBrightness - newValue
+    }
+
+    fun updateTotalBrightness(newValue: Int) {
+        totalBrightness = newValue
+    }
+
+    fun getTotalBrightness(): Int {
+        return totalBrightness
     }
 
 
     fun onMainSwitchToggled(checked: Boolean) {
         Log.d("", "")
         TransmitDataToDevice.transmitDataForAllDevice(checked)
-        updateDeviceList(checked)
+        DeviceCalibrations.updateDeviceList(checked, this)
+        onMainDeviceTurnOff.postValue(checked)
     }
 
     fun onMainBrightnessToggled(brightnessValue: Int) {
         Log.d("Brightness", " Value: " + brightnessValue)
-        if (!isFirstTime)
-            updateDeviceList(brightnessValue)
+        if (!isFirstTime )
+            DeviceCalibrations.updateDeviceList(brightnessValue, this)
         else
             isFirstTime = false
+
     }
 
     fun onDeviceSwitchToggled(deviceId: Int, switchedOn: Boolean) {
         Log.d("", "")
         TransmitDataToDevice.transmitDataForDevice(deviceId, switchedOn)
+        DeviceCalibrations.updateDeviceList(deviceId, switchedOn, this)
     }
 
     fun onDeviceBrightnessToggled(deviceId: Int, brightnessValue: Int) {
         Log.d("Brightness", "DeviceId:" + deviceId + " Value: " + brightnessValue)
-        updateDeviceList(deviceId, brightnessValue)
+        DeviceCalibrations.updateDeviceList(deviceId, brightnessValue, this)
+        isCallFromChild = true
     }
 
-    fun updateDeviceList(deviceId: Int, brightnessValue: Int) {
-
-        deviceList.forEach {
-            if (it.deviceId == deviceId) {
-                it.deviceBrightnessLevel = brightnessValue
-            }
-            totalBrightness = 0
-            updateTotalBrightness(it.deviceBrightnessLevel, true)
-        }
-        onDeviceSatusUpdate.postValue(true)
-        onMainBrightnessChange.postValue(totalBrightness)
-    }
-
-    fun updateDeviceList(brightnessValue: Int) {
-
-        deviceList.forEach {
-            it.deviceBrightnessLevel = brightnessValue
-            totalBrightness = brightnessValue
-        }
-        onDeviceSatusUpdate.postValue(true)
-    }
-
-    fun updateDeviceList(deviceId: Int, switchedOn: Boolean) {
-
-        deviceList.forEach {
-            if (it.deviceId == deviceId) {
-
-                it.deviceStatus = switchedOn
-            }
-        }
-        onDeviceSatusUpdate.postValue(true)
-    }
-
-    fun updateDeviceList(switchedOn: Boolean) {
-        deviceList.forEach {
-            it.deviceStatus = switchedOn
-
-        }
-        onDeviceSatusUpdate.postValue(true)
-
-    }
 
 }

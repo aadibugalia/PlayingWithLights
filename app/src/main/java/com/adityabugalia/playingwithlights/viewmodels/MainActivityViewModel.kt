@@ -142,11 +142,11 @@ class MainActivityViewModel : ViewModel() {
 
     fun onMainBrightnessToggled(brightnessValue: Int) {
         Log.d("Brightness", " Value: " + brightnessValue)
-        if (!isFirstTime )
+        if (!isFirstTime && !isCallFromChild)
             DeviceCalibrations.updateDeviceList(brightnessValue, this)
         else
             isFirstTime = false
-
+            isCallFromChild= false
     }
 
     fun onDeviceSwitchToggled(deviceId: Int, switchedOn: Boolean) {
